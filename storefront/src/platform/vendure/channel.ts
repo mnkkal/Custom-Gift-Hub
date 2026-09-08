@@ -11,6 +11,11 @@ export async function getActiveChannel() {
     'use cache';
     cacheLife('minutes');
 
-    const result = await query(GetActiveChannelQuery);
-    return result.data.activeChannel;
+    try {
+        const result = await query(GetActiveChannelQuery);
+        return result?.data?.activeChannel || null;
+    } catch {
+        return null;
+    }
 }
+
