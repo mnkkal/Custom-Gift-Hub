@@ -1,0 +1,37 @@
+﻿# Dependencies
+node_modules/
+storefront/node_modules/
+
+# Build artifacts & caches
+dist/
+build/
+.vendure/
+storefront/.next/
+storefront/out/
+*.tsbuildinfo
+storefront/next-env.d.ts
+
+# Secrets and environment variables (CRITICAL)
+.env
+.env.local
+.env.*.local
+storefront/.env
+storefront/.env.local
+storefront/.env.*.local
+
+# Allow example files
+!.env.example
+!storefront/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+bun-debug.log*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.pem

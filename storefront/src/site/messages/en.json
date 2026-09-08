@@ -1,0 +1,27 @@
+{
+  "NotFound": {
+    "title": "Page Not Found",
+    "message": "The gift or page you are looking for does not exist or has been moved.",
+    "goHome": "Go to Home",
+    "browseProducts": "Browse Gifts",
+    "popularCollections": "Popular Categories"
+  },
+  "Footer": {
+    "description": "Custom Gift Hub ~ By Chaturmal & Co. Making gifting easy, meaningful and memorable with creative, high-quality, personalized gifts and custom 3D human miniatures.",
+    "categories": "Categories",
+    "customer": "Customer Care",
+    "shopAll": "All Products",
+    "orders": "Track Orders",
+    "account": "My Account",
+    "company": "Company & Policies",
+    "about": "About Us",
+    "contact": "Contact Store",
+    "faq": "FAQs",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "returns": "Return & Refund Policy",
+    "shipping": "Shipping Policy",
+    "copyright": "Custom Gift Hub ~ By Chaturmal & Co. All rights reserved.",
+    "poweredBy": "Crafted with passion in Bharuch, Gujarat"
+  }
+}

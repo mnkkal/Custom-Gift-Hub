@@ -1,0 +1,29 @@
+{
+  "Hero": {
+    "title": "Think Gift,",
+    "titleHighlight": "Think Us!",
+    "subtitle": "Custom Gift Hub ~ By Chaturmal & Co. Making gifting easy, meaningful and memorable with creative personalized gifts, laser engraving, and custom 3D human miniatures.",
+    "shopNow": "Shop Gifts",
+    "viewCollections": "Explore Categories"
+  },
+  "Home": {
+    "pageTitle": "Think Gift, Think Us! - Custom Gift Hub ~ By Chaturmal & Co.",
+    "description": "Custom Gift Hub ~ By Chaturmal & Co. Handcrafted personalized gifts, 3D human miniatures, customized mugs, frames, hampers, and corporate gifts in Bharuch, Gujarat. Pan-India express delivery.",
+    "ogDescription": "Personalized gifts, 3D human miniatures, custom frames, mugs & hampers. Handcrafted in Bharuch, delivered across India.",
+    "whyShopWithUs": "Why Choose Custom Gift Hub",
+    "features": {
+      "highQuality": {
+        "title": "Artisan 3D Miniatures",
+        "description": "Hyper-detailed 3D human miniatures sculpted and hand-painted from your photos"
+      },
+      "bestPrices": {
+        "title": "Personalised Gifting",
+        "description": "Laser-cut bottles, engraved pens, lighting photo frames, custom mugs & luxury gift hampers"
+      },
+      "fastDelivery": {
+        "title": "Pan-India Shipping",
+        "description": "Safe, protective courier shipping across all Indian pincodes & local pickup in Bharuch"
+      }
+    }
+  }
+}
