@@ -97,8 +97,13 @@ export function Navbar() {
 
                     {/* Mobile Search Row */}
                     <div className="pb-3 md:hidden">
-                        <GiftanaSearch />
+                        <Suspense fallback={
+                            <div className="w-full h-10 rounded-full bg-muted/40 animate-pulse" />
+                        }>
+                            <GiftanaSearch />
+                        </Suspense>
                     </div>
+
                 </div>
             </div>
 
