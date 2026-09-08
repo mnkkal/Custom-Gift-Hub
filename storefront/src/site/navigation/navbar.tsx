@@ -54,8 +54,13 @@ export function Navbar() {
 
                         {/* Center: Giftana-Style Smart Search Bar with Category Filter */}
                         <div className="flex-1 max-w-xl mx-2 hidden md:block">
-                            <GiftanaSearch />
+                            <Suspense fallback={
+                                <div className="w-full h-10 rounded-full bg-muted/40 animate-pulse" />
+                            }>
+                                <GiftanaSearch />
+                            </Suspense>
                         </div>
+
 
                         {/* Right Utility Bar: Help Desk, Currency, Language, Theme, Cart, Profile */}
                         <div className="flex items-center gap-2 lg:gap-3">

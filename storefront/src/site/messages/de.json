@@ -13,11 +13,16 @@
     "shopAll": "Alle Produkte",
     "orders": "Bestellungen",
     "account": "Konto",
-    "vendure": "Vendure",
-    "github": "GitHub",
-    "documentation": "Dokumentation",
-    "sourceCode": "Quellcode",
-    "copyright": "Vendure Store. Alle Rechte vorbehalten.",
-    "poweredBy": "Powered by"
+    "company": "Unternehmen & Richtlinien",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "faq": "Häufige Fragen",
+    "terms": "AGB",
+    "privacy": "Datenschutz",
+    "returns": "Rückgaberichtlinie",
+    "shipping": "Versandinformationen",
+    "copyright": "Custom Gift Hub ~ By Chaturmal & Co. Alle Rechte vorbehalten.",
+    "poweredBy": "Mit Leidenschaft hergestellt in Bharuch, Gujarat"
   }
 }
+
