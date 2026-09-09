@@ -4,7 +4,9 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/site/i18n/request.ts');
 
 const nextConfig: NextConfig = {
+    output: 'standalone',
     cacheComponents: true,
+
     images: {
         // Allow SVG images
         dangerouslyAllowSVG: true,
