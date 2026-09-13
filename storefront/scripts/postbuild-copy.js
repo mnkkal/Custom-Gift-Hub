@@ -74,4 +74,56 @@ for (const pkg of packagesToCopy) {
   }
 }
 
+// 3. Create start-vendure.js inside standalone directory
+const startVendureCode = `
+const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+if (!process.env.VENDURE_STARTED) {
+  process.env.VENDURE_STARTED = 'true';
+  const internalPort = process.env.INTERNAL_VENDURE_PORT || '3002';
+  const distIndex = path.join(__dirname, 'dist', 'index.js');
+
+  if (fs.existsSync(distIndex)) {
+    console.log('================================================================');
+    console.log('>>> [Standalone Server] Auto-starting Vendure Backend on port ' + internalPort + '...');
+    console.log('>>> Dist script: ' + distIndex);
+    console.log('================================================================');
+
+    try {
+      require('dotenv').config({ path: path.join(__dirname, '.env') });
+    } catch (e) {}
+
+    const backend = spawn(process.execPath, [distIndex], {
+      cwd: __dirname,
+      env: {
+        ...process.env,
+        PORT: internalPort,
+        VENDURE_PORT: internalPort,
+      },
+      stdio: 'inherit',
+    });
+
+    backend.on('error', (err) => console.error('>>> [Vendure] Spawn error:', err));
+    backend.on('exit', (code, sig) => console.error(\`>>> [Vendure] Process exited: code \${code}, sig \${sig}\`));
+  } else {
+    console.error('>>> [Standalone Server] dist/index.js not found at ' + distIndex);
+  }
+}
+`;
+
+fs.writeFileSync(path.join(standaloneDir, 'start-vendure.js'), startVendureCode.trim());
+
+// 4. Prepend require('./start-vendure.js') to standalone server.js
+const standaloneServerJs = path.join(standaloneDir, 'server.js');
+if (fs.existsSync(standaloneServerJs)) {
+  let content = fs.readFileSync(standaloneServerJs, 'utf8');
+  if (!content.includes('start-vendure.js')) {
+    content = "require('./start-vendure.js');\n" + content;
+    fs.writeFileSync(standaloneServerJs, content, 'utf8');
+    console.log('>>> [Postbuild] Injected Vendure auto-spawner into standalone server.js');
+  }
+}
+
 console.log('>>> [Postbuild] Standalone backend packaging complete!');

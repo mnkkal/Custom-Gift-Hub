@@ -33,6 +33,59 @@ export async function GET() {
     shopApiError = err.cause ? `${err.message} (${err.cause.code || err.cause})` : err.message;
   }
 
+  let autoSpawnAttempt = 'none';
+  if (vendureAdminStatus === 'CONNECTION_FAILED' && !process.env.VENDURE_SPAWNED_BY_DIAGNOSTIC) {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const { spawn } = require('child_process');
+
+      const distPath = [
+        path.resolve(process.cwd(), 'dist', 'index.js'),
+        path.resolve(process.cwd(), '..', 'dist', 'index.js'),
+      ].find((p: string) => fs.existsSync(p));
+
+      if (distPath) {
+        process.env.VENDURE_SPAWNED_BY_DIAGNOSTIC = 'true';
+        const backendRoot = path.dirname(path.dirname(distPath));
+        const internalPort = process.env.INTERNAL_VENDURE_PORT || '3002';
+        
+        try {
+          require('dotenv').config({ path: path.join(backendRoot, '.env') });
+        } catch (e) {}
+
+        const backend = spawn(process.execPath, [distPath], {
+          cwd: backendRoot,
+          env: {
+            ...process.env,
+            PORT: internalPort,
+            VENDURE_PORT: internalPort,
+          },
+          detached: true,
+          stdio: 'ignore',
+        });
+        backend.unref();
+        autoSpawnAttempt = `Triggered background spawn of ${distPath} on port ${internalPort}`;
+      } else {
+        autoSpawnAttempt = 'dist/index.js not found';
+      }
+    } catch (err: any) {
+      autoSpawnAttempt = `Spawn error: ${err.message}`;
+    }
+  }
+
+  const readLog = (filename: string) => {
+    try {
+      const p = require('path').join(process.cwd(), filename);
+      if (require('fs').existsSync(p)) {
+        return require('fs').readFileSync(p, 'utf8').slice(-1500);
+      }
+      return 'File does not exist';
+    } catch (e: any) {
+      return e.message;
+    }
+  };
+
   return NextResponse.json({
     status: vendureAdminHtml ? 'HEALTHY' : 'DEGRADED',
     timestamp: new Date().toISOString(),
@@ -44,13 +97,12 @@ export async function GET() {
       cwd: process.cwd(),
       argv: process.argv,
       execPath: process.execPath,
-      filesInCwd: (() => {
-        try { return require('fs').readdirSync(process.cwd()); } catch (e: any) { return e.message; }
-      })(),
-      filesInParent: (() => {
-        try { return require('fs').readdirSync(require('path').resolve(process.cwd(), '..')); } catch (e: any) { return e.message; }
-      })(),
       distIndexExists: require('fs').existsSync(require('path').resolve(process.cwd(), '..', 'dist', 'index.js')) || require('fs').existsSync(require('path').resolve(process.cwd(), 'dist', 'index.js')),
+    },
+    logs: {
+      stderrTail: readLog('stderr.log'),
+      consoleTail: readLog('console.log'),
+      autoSpawnAttempt,
     },
     configuration: {
       port: process.env.PORT || 'not set (default 3000)',
