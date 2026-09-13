@@ -39,7 +39,7 @@ export function MobileNav({collections}: MobileNavProps) {
     };
 
     const handleLinkClick = () => {
-        setOpen(false);
+        setTimeout(() => setOpen(false), 150);
     };
 
     return (

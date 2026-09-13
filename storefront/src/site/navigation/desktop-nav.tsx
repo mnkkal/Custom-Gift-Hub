@@ -20,6 +20,14 @@ export function DesktopNav() {
     const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
     const [allCategoriesOpen, setAllCategoriesOpen] = useState(false);
 
+    const handleMenuClick = () => {
+        // Defer closing so Link click finishes dispatching navigation before unmounting
+        setTimeout(() => {
+            setAllCategoriesOpen(false);
+            setActiveMegaMenu(null);
+        }, 150);
+    };
+
     const miniatureCategory = CATEGORIES_CONFIG.find(c => c.slug === 'chocolates-human-miniatures')!;
     const photoFrameCategory = CATEGORIES_CONFIG.find(c => c.slug === 'photo-frames')!;
     const customisationCategory = CATEGORIES_CONFIG.find(c => c.slug === 'customisation')!;
@@ -56,7 +64,7 @@ export function DesktopNav() {
                                         key={cat.slug}
                                         href={`/collection/${cat.slug}`}
                                         className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted/70 transition-colors border border-transparent hover:border-amber-500/30 group"
-                                        onClick={() => setAllCategoriesOpen(false)}
+                                        onClick={handleMenuClick}
                                     >
                                         <div className="size-12 rounded-lg overflow-hidden shrink-0 border bg-muted/30 p-1 group-hover:scale-105 transition-transform">
                                             <Image
@@ -109,7 +117,7 @@ export function DesktopNav() {
                             </Link>
 
                             {activeMegaMenu === '3d-miniatures' && (
-                                <MegaMenuContent category={miniatureCategory} onClose={() => setActiveMegaMenu(null)} />
+                                <MegaMenuContent category={miniatureCategory} onClose={handleMenuClick} />
                             )}
                         </div>
 
@@ -129,7 +137,7 @@ export function DesktopNav() {
                             </Link>
 
                             {activeMegaMenu === 'photo-frames' && (
-                                <MegaMenuContent category={photoFrameCategory} onClose={() => setActiveMegaMenu(null)} />
+                                <MegaMenuContent category={photoFrameCategory} onClose={handleMenuClick} />
                             )}
                         </div>
 
@@ -148,7 +156,7 @@ export function DesktopNav() {
                             </Link>
 
                             {activeMegaMenu === 'customisation' && (
-                                <MegaMenuContent category={customisationCategory} onClose={() => setActiveMegaMenu(null)} />
+                                <MegaMenuContent category={customisationCategory} onClose={handleMenuClick} />
                             )}
                         </div>
 
@@ -167,7 +175,7 @@ export function DesktopNav() {
                             </Link>
 
                             {activeMegaMenu === 'flower-corner' && (
-                                <MegaMenuContent category={flowerCategory} onClose={() => setActiveMegaMenu(null)} />
+                                <MegaMenuContent category={flowerCategory} onClose={handleMenuClick} />
                             )}
                         </div>
 
@@ -189,7 +197,7 @@ export function DesktopNav() {
                                 <MegaMenuContent 
                                     category={showpieceCategory} 
                                     extraCategorySlugs={['wall-clocks', 'wall-frames']}
-                                    onClose={() => setActiveMegaMenu(null)} 
+                                    onClose={handleMenuClick} 
                                 />
                             )}
                         </div>
@@ -212,7 +220,7 @@ export function DesktopNav() {
                                 <MegaMenuContent 
                                     category={fashionCategory} 
                                     extraCategorySlugs={['jewellery', 'perfume']}
-                                    onClose={() => setActiveMegaMenu(null)} 
+                                    onClose={handleMenuClick} 
                                 />
                             )}
                         </div>
@@ -235,7 +243,7 @@ export function DesktopNav() {
                                 <MegaMenuContent 
                                     category={kidsCategory} 
                                     extraCategorySlugs={['stationery-decor']}
-                                    onClose={() => setActiveMegaMenu(null)} 
+                                    onClose={handleMenuClick} 
                                 />
                             )}
                         </div>
@@ -258,7 +266,7 @@ export function DesktopNav() {
                                 <MegaMenuContent 
                                     category={seasonalCategory} 
                                     extraCategorySlugs={['other-gifts']}
-                                    onClose={() => setActiveMegaMenu(null)} 
+                                    onClose={handleMenuClick} 
                                 />
                             )}
                         </div>

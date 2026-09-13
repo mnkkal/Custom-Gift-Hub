@@ -39,12 +39,25 @@ async function getCollectionProducts(slug: string, searchParams: { [key: string]
     cacheTag(`collection-${slug}-${locale}-${currencyCode}`);
     cacheTag('collection');
 
-    return query(SearchProductsQuery, {
-        input: buildSearchInput({
-            searchParams,
-            collectionSlug: slug
-        })
-    }, {languageCode: locale, currencyCode});
+    try {
+        return await query(SearchProductsQuery, {
+            input: buildSearchInput({
+                searchParams,
+                collectionSlug: slug
+            })
+        }, {languageCode: locale, currencyCode});
+    } catch (e) {
+        console.warn(`Failed to query collection products for slug "${slug}":`, (e as Error).message);
+        return {
+            data: {
+                search: {
+                    totalItems: 0,
+                    items: [],
+                    facetValues: [],
+                }
+            }
+        } as any;
+    }
 }
 
 async function getCollectionMetadata(slug: string) {
@@ -54,10 +67,34 @@ async function getCollectionMetadata(slug: string) {
     const locale = await getRouteLocale();
     cacheTag(`collection-meta-${slug}-${locale}`);
 
-    return query(GetCollectionProductsQuery, {
-        slug,
-        input: { take: 0, collectionSlug: slug, groupByProduct: true },
-    }, {languageCode: locale});
+    try {
+        const result = await query(GetCollectionProductsQuery, {
+            slug,
+            input: { take: 0, collectionSlug: slug, groupByProduct: true },
+        }, {languageCode: locale});
+
+        if (result?.data?.collection) {
+            return result;
+        }
+    } catch (e) {
+        console.warn(`Failed to query collection metadata for slug "${slug}":`, (e as Error).message);
+    }
+
+    const categoryConfig = getCategoryConfig(slug);
+    return {
+        data: {
+            collection: categoryConfig ? {
+                id: slug,
+                name: categoryConfig.name,
+                slug: categoryConfig.slug,
+                description: categoryConfig.description,
+                featuredAsset: categoryConfig.image ? {
+                    id: slug,
+                    preview: categoryConfig.image
+                } : null
+            } : null
+        }
+    } as any;
 }
 
 export async function generateMetadata({
