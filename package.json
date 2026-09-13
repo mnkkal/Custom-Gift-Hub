@@ -5,9 +5,13 @@
   "description": "Vendure backend for Custom Gift Hub",
   "scripts": {
     "start:dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "build:backend": "tsc",
+    "build:storefront": "cd storefront && npm install && npm run build",
+    "build": "npm run build:backend && npm run build:storefront",
+    "start": "node start-unified.js",
+    "start:backend-only": "node dist/index.js"
   },
+
   "dependencies": {
     "@vendure/core": "^3.7.0",
     "@vendure/admin-ui-plugin": "^3.7.0",
