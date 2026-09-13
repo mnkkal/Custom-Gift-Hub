@@ -21,16 +21,28 @@ export const config: VendureConfig = {
     adminApiPath: 'admin-api',
     shopApiPath: 'shop-api',
     cors: {
-      origin: [
-        'http://localhost:3001',
-        'http://localhost:3000',
-        'https://customgifthub.in',
-        'https://www.customgifthub.in',
-        'https://api.customgifthub.in',
-      ],
+      origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        const allowedOrigins = [
+          'http://localhost:3001',
+          'http://localhost:3000',
+          'https://customgifthub.in',
+          'https://www.customgifthub.in',
+          'https://api.customgifthub.in',
+        ];
+        if (
+          !origin ||
+          allowedOrigins.includes(origin) ||
+          origin.endsWith('.vercel.app')
+        ) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
       credentials: true,
     },
   },
+
 
   authOptions: {
     tokenMethod: ['bearer', 'cookie'],
