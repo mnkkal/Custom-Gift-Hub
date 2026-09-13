@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Custom Gift Hub - Unified Single Process Runner for Hostinger Web App
  * Runs both Vendure Backend + Admin Panel and Next.js Storefront concurrently under 1 Node.js slot!
  */
@@ -36,6 +36,7 @@ const storefront = spawn('node', ['server.js'], {
         ...process.env,
         PORT: hostingerPort,
         INTERNAL_VENDURE_URL: 'http://127.0.0.1:' + internalVendurePort,
+        VENDURE_SHOP_API_URL: 'http://127.0.0.1:' + internalVendurePort + '/shop-api',
         NEXT_PUBLIC_VENDURE_SHOP_API_URL: '/shop-api',
     },
     stdio: 'inherit',

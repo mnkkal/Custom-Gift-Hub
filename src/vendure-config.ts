@@ -170,7 +170,9 @@ export const config: VendureConfig = {
       route: 'admin',
       port: parseInt(process.env.VENDURE_PORT || process.env.PORT || '3002', 10),
       adminUiConfig: {
-        apiPort: parseInt(process.env.VENDURE_PORT || process.env.PORT || '3002', 10),
+        apiHost: 'auto',
+        apiPort: 'auto',
+        adminApiPath: 'admin-api',
       },
     }),
   ],

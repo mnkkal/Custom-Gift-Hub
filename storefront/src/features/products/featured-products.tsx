@@ -29,19 +29,22 @@ async function getFeaturedCollectionProducts(currencyCode: string) {
     cacheTag(`featured-${locale}-${currencyCode}`);
     cacheTag('products');
 
-    // Fetch featured products from a specific collection
-    // Replace 'featured' with your actual collection slug
-    const result = await query(GetCollectionProductsQuery, {
-        slug: "electronics",
-        input: {
-            collectionSlug: "electronics",
-            take: 12,
-            skip: 0,
-            groupByProduct: true
-        }
-    }, {languageCode: locale, currencyCode});
+    try {
+        const result = await query(GetCollectionProductsQuery, {
+            slug: "chocolates-human-miniatures",
+            input: {
+                collectionSlug: "chocolates-human-miniatures",
+                take: 12,
+                skip: 0,
+                groupByProduct: true
+            }
+        }, {languageCode: locale, currencyCode});
 
-    return result.data.search.items;
+        return result?.data?.search?.items || [];
+    } catch (e) {
+        console.warn('Failed to fetch featured collection products:', (e as Error).message);
+        return [];
+    }
 }
 
 
@@ -50,6 +53,11 @@ export async function FeaturedProducts() {
     const currencyCode = await getActiveCurrencyCode();
     const t = await getTranslations({locale, namespace: 'Product'});
     const products = await getFeaturedCollectionProducts(currencyCode);
+
+    if (!products || products.length === 0) {
+        return null;
+    }
+
     const firstProduct = products[0]
         ? readFragment(ProductCardFragment, products[0])
         : undefined;
