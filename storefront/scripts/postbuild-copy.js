@@ -71,7 +71,8 @@ const fullOverwrite = new Set([
   'reflect-metadata',
   'dotenv',
   'graphql',
-  'graphql-tag'
+  'graphql-tag',
+  '@apollo'
 ]);
 
 for (const standaloneDir of standaloneDirs) {

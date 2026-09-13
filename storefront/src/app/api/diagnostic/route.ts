@@ -121,14 +121,6 @@ export async function GET() {
       matchingModules: require('fs').existsSync(require('path').resolve(process.cwd(), 'node_modules'))
         ? require('fs').readdirSync(require('path').resolve(process.cwd(), 'node_modules')).filter((n: string) => n.startsWith('@') || n.includes('vendure') || n.includes('typeorm') || n.includes('nanoid') || n.includes('pg'))
         : [],
-      tryRequireVendure: (() => {
-        try {
-          const v = require('@vendure/core');
-          return `SUCCESS: bootstrap is ${typeof v.bootstrap}`;
-        } catch (e: any) {
-          return `FAILED: ${e.message} (code: ${e.code})`;
-        }
-      })(),
     },
     configuration: {
       port: process.env.PORT || 'not set (default 3000)',
