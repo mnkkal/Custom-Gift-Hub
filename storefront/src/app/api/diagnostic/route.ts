@@ -44,6 +44,12 @@ export async function GET() {
       cwd: process.cwd(),
       argv: process.argv,
       execPath: process.execPath,
+      filesInCwd: (() => {
+        try { return require('fs').readdirSync(process.cwd()); } catch (e: any) { return e.message; }
+      })(),
+      filesInParent: (() => {
+        try { return require('fs').readdirSync(require('path').resolve(process.cwd(), '..')); } catch (e: any) { return e.message; }
+      })(),
       distIndexExists: require('fs').existsSync(require('path').resolve(process.cwd(), '..', 'dist', 'index.js')) || require('fs').existsSync(require('path').resolve(process.cwd(), 'dist', 'index.js')),
     },
     configuration: {
