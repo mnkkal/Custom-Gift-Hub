@@ -63,6 +63,7 @@ const storefront = spawn(process.execPath, [storefrontServer], {
         INTERNAL_VENDURE_URL: 'http://127.0.0.1:' + internalVendurePort,
         VENDURE_SHOP_API_URL: 'http://127.0.0.1:' + internalVendurePort + '/shop-api',
         NEXT_PUBLIC_VENDURE_SHOP_API_URL: '/shop-api',
+        VENDURE_STARTED: 'true',
     },
     stdio: 'inherit',
 });

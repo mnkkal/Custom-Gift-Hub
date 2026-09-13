@@ -41,6 +41,10 @@ export async function GET() {
       platform: process.platform,
       memoryUsageMb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
       uptimeSeconds: Math.round(process.uptime()),
+      cwd: process.cwd(),
+      argv: process.argv,
+      execPath: process.execPath,
+      distIndexExists: require('fs').existsSync(require('path').resolve(process.cwd(), '..', 'dist', 'index.js')) || require('fs').existsSync(require('path').resolve(process.cwd(), 'dist', 'index.js')),
     },
     configuration: {
       port: process.env.PORT || 'not set (default 3000)',
