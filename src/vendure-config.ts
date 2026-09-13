@@ -20,7 +20,18 @@ export const config: VendureConfig = {
     port: parseInt(process.env.PORT || '3000', 10),
     adminApiPath: 'admin-api',
     shopApiPath: 'shop-api',
+    cors: {
+      origin: [
+        'http://localhost:3001',
+        'http://localhost:3000',
+        'https://customgifthub.in',
+        'https://www.customgifthub.in',
+        'https://api.customgifthub.in',
+      ],
+      credentials: true,
+    },
   },
+
   authOptions: {
     tokenMethod: ['bearer', 'cookie'],
     superadminCredentials: {
@@ -142,6 +153,12 @@ export const config: VendureConfig = {
   plugins: [
     DefaultJobQueuePlugin.init({ useDatabaseForBuffer: true }),
     DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
-    AdminUiPlugin.init({ route: 'admin', port: 3002 }),
+    AdminUiPlugin.init({
+      route: 'admin',
+      port: parseInt(process.env.PORT || '3000', 10),
+      adminUiConfig: {
+        apiPort: parseInt(process.env.PORT || '3000', 10),
+      },
+    }),
   ],
 };
