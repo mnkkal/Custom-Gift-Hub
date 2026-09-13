@@ -103,7 +103,32 @@ export async function GET() {
     logs: {
       stderrTail: readLog('stderr.log'),
       consoleTail: readLog('console.log'),
+      postbuildTail: readLog('postbuild.log'),
       autoSpawnAttempt,
+    },
+    inspection: {
+      metadata: (() => {
+        try {
+          const metaPath = require('path').resolve(process.cwd(), '..', '.metadata.json');
+          return require('fs').existsSync(metaPath) ? JSON.parse(require('fs').readFileSync(metaPath, 'utf8')) : 'not found';
+        } catch (e: any) { return e.message; }
+      })(),
+      vendureInCwdModules: require('fs').existsSync(require('path').resolve(process.cwd(), 'node_modules', '@vendure')),
+      vendureCoreInCwdModules: require('fs').existsSync(require('path').resolve(process.cwd(), 'node_modules', '@vendure', 'core')),
+      totalCwdModulesCount: require('fs').existsSync(require('path').resolve(process.cwd(), 'node_modules'))
+        ? require('fs').readdirSync(require('path').resolve(process.cwd(), 'node_modules')).length
+        : 0,
+      matchingModules: require('fs').existsSync(require('path').resolve(process.cwd(), 'node_modules'))
+        ? require('fs').readdirSync(require('path').resolve(process.cwd(), 'node_modules')).filter((n: string) => n.startsWith('@') || n.includes('vendure') || n.includes('typeorm') || n.includes('nanoid') || n.includes('pg'))
+        : [],
+      tryRequireVendure: (() => {
+        try {
+          const v = require('@vendure/core');
+          return `SUCCESS: bootstrap is ${typeof v.bootstrap}`;
+        } catch (e: any) {
+          return `FAILED: ${e.message} (code: ${e.code})`;
+        }
+      })(),
     },
     configuration: {
       port: process.env.PORT || 'not set (default 3000)',
