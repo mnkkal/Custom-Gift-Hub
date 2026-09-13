@@ -60,6 +60,7 @@ export async function GET() {
             ...process.env,
             PORT: internalPort,
             VENDURE_PORT: internalPort,
+            NODE_PATH: path.join(backendRoot, 'node_modules'),
           },
           detached: true,
           stdio: 'ignore',

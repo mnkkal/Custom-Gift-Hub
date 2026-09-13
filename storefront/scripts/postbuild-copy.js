@@ -27,51 +27,57 @@ if (fs.existsSync(sourceDist)) {
   console.warn('>>> [Postbuild] Source dist not found at:', sourceDist);
 }
 
-// 2. Copy backend node_modules into standalone node_modules
+// 2. Sync node_modules into standalone node_modules
 const standaloneModules = path.join(standaloneDir, 'node_modules');
 if (!fs.existsSync(standaloneModules)) {
   fs.mkdirSync(standaloneModules, { recursive: true });
 }
 
-const packagesToCopy = [
-  '@vendure',
-  'pg',
-  'pg-cloudflare',
-  'pg-connection-string',
-  'pg-int8',
-  'pg-numeric',
-  'pg-pool',
-  'pg-protocol',
-  'pg-types',
-  'pgpass',
-  'typeorm',
-  'cloudinary',
-  'class-validator',
-  'reflect-metadata',
-  'dotenv'
-];
+const srcModules = path.join(__dirname, '..', 'node_modules');
+if (fs.existsSync(srcModules)) {
+  console.log('>>> [Postbuild] Syncing node_modules into standalone directory...');
+  const items = fs.readdirSync(srcModules);
 
-const moduleSources = [
-  path.join(__dirname, '..', '..', 'node_modules'),
-  path.join(__dirname, '..', 'node_modules'),
-];
+  // Packages that Next.js standalone tracing often truncates or misses completely
+  const fullOverwrite = new Set([
+    '@vendure',
+    '@nestjs',
+    'nanoid',
+    'rxjs',
+    'typeorm',
+    'pg',
+    'pg-cloudflare',
+    'pg-connection-string',
+    'pg-int8',
+    'pg-numeric',
+    'pg-pool',
+    'pg-protocol',
+    'pg-types',
+    'pgpass',
+    'cloudinary',
+    'class-validator',
+    'class-transformer',
+    'reflect-metadata',
+    'dotenv',
+    'graphql',
+    'graphql-tag'
+  ]);
 
-for (const pkg of packagesToCopy) {
-  for (const srcDir of moduleSources) {
-    const pkgPath = path.join(srcDir, pkg);
-    if (fs.existsSync(pkgPath)) {
-      const targetPkg = path.join(standaloneModules, pkg);
-      if (!fs.existsSync(targetPkg)) {
-        try {
-          fs.cpSync(pkgPath, targetPkg, { recursive: true, force: true });
-          console.log(`>>> [Postbuild] Copied ${pkg} to standalone node_modules`);
-        } catch (e) {
-          console.warn(`>>> [Postbuild] Failed copying ${pkg}:`, e.message);
-        }
+  for (const item of items) {
+    if (item === '.bin' || item === '.cache') continue;
+    const srcPkg = path.join(srcModules, item);
+    const targetPkg = path.join(standaloneModules, item);
+    const shouldOverwrite = fullOverwrite.has(item);
+
+    if (!fs.existsSync(targetPkg) || shouldOverwrite) {
+      try {
+        fs.cpSync(srcPkg, targetPkg, { recursive: true, force: true });
+      } catch (err) {
+        // Continue silently on non-critical files
       }
-      break;
     }
   }
+  console.log('>>> [Postbuild] node_modules sync completed.');
 }
 
 // 3. Create start-vendure.js inside standalone directory
@@ -84,6 +90,7 @@ if (!process.env.VENDURE_STARTED) {
   process.env.VENDURE_STARTED = 'true';
   const internalPort = process.env.INTERNAL_VENDURE_PORT || '3002';
   const distIndex = path.join(__dirname, 'dist', 'index.js');
+  const modulesDir = path.join(__dirname, 'node_modules');
 
   if (fs.existsSync(distIndex)) {
     console.log('================================================================');
@@ -101,12 +108,13 @@ if (!process.env.VENDURE_STARTED) {
         ...process.env,
         PORT: internalPort,
         VENDURE_PORT: internalPort,
+        NODE_PATH: modulesDir,
       },
       stdio: 'inherit',
     });
 
     backend.on('error', (err) => console.error('>>> [Vendure] Spawn error:', err));
-    backend.on('exit', (code, sig) => console.error(\`>>> [Vendure] Process exited: code \${code}, sig \${sig}\`));
+    backend.on('exit', (code, sig) => console.error('>>> [Vendure] Process exited: code ' + code + ', sig ' + sig));
   } else {
     console.error('>>> [Standalone Server] dist/index.js not found at ' + distIndex);
   }
@@ -114,6 +122,7 @@ if (!process.env.VENDURE_STARTED) {
 `;
 
 fs.writeFileSync(path.join(standaloneDir, 'start-vendure.js'), startVendureCode.trim());
+console.log('>>> [Postbuild] Created start-vendure.js');
 
 // 4. Prepend require('./start-vendure.js') to standalone server.js
 const standaloneServerJs = path.join(standaloneDir, 'server.js');
