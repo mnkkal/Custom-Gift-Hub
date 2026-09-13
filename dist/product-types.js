@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductType = void 0;
+var ProductType;
+(function (ProductType) {
+    ProductType["KIDS"] = "KIDS";
+    ProductType["HANDBAGS"] = "HANDBAGS";
+    ProductType["PERFUME"] = "PERFUME";
+    ProductType["WALL_FRAMES"] = "WALL_FRAMES";
+    ProductType["PHOTO_FRAMES"] = "PHOTO_FRAMES";
+    ProductType["WALL_CLOCKS"] = "WALL_CLOCKS";
+    ProductType["SHOWPIECES"] = "SHOWPIECES";
+    ProductType["MUGS_DRINKERS"] = "MUGS_DRINKERS";
+    ProductType["CUSTOMISATION"] = "CUSTOMISATION";
+    ProductType["FLOWER_CORNER"] = "FLOWER_CORNER";
+    ProductType["JEWELLERY"] = "JEWELLERY";
+    ProductType["STATIONERY_DECOR"] = "STATIONERY_DECOR";
+    ProductType["SEASONAL_DISPLAY"] = "SEASONAL_DISPLAY";
+    ProductType["OTHER"] = "OTHER";
+    ProductType["CHOCOLATES_MINIATURES"] = "CHOCOLATES_MINIATURES";
+})(ProductType || (exports.ProductType = ProductType = {}));

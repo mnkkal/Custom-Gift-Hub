@@ -1,8 +1,10 @@
 import {
   CurrencyCode,
   DefaultJobQueuePlugin,
+  DefaultLogger,
   DefaultSearchPlugin,
   LanguageCode,
+  LogLevel,
   VendureConfig,
 } from '@vendure/core';
 import path from 'path';
@@ -16,6 +18,7 @@ import {
 
 export const config: VendureConfig = {
   defaultLanguageCode: LanguageCode.en,
+  logger: new DefaultLogger({ level: LogLevel.Info }),
   apiOptions: {
     port: parseInt(process.env.VENDURE_PORT || process.env.PORT || '3002', 10),
     adminApiPath: 'admin-api',
