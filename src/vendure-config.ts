@@ -17,9 +17,10 @@ import {
 export const config: VendureConfig = {
   defaultLanguageCode: LanguageCode.en,
   apiOptions: {
-    port: parseInt(process.env.PORT || '3000', 10),
+    port: parseInt(process.env.VENDURE_PORT || process.env.PORT || '3002', 10),
     adminApiPath: 'admin-api',
     shopApiPath: 'shop-api',
+
     cors: {
       origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         const allowedOrigins = [
@@ -167,9 +168,9 @@ export const config: VendureConfig = {
     DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
     AdminUiPlugin.init({
       route: 'admin',
-      port: parseInt(process.env.PORT || '3000', 10),
+      port: parseInt(process.env.VENDURE_PORT || process.env.PORT || '3002', 10),
       adminUiConfig: {
-        apiPort: parseInt(process.env.PORT || '3000', 10),
+        apiPort: parseInt(process.env.VENDURE_PORT || process.env.PORT || '3002', 10),
       },
     }),
   ],

@@ -29,7 +29,37 @@ const nextConfig = {
                 hostname: 'res.cloudinary.com'
             }
         ],
-    }
+    },
+    async rewrites() {
+        const backendUrl = process.env.INTERNAL_VENDURE_URL || 'http://127.0.0.1:3002';
+        return [
+            {
+                source: '/admin',
+                destination: `${backendUrl}/admin`,
+            },
+            {
+                source: '/admin/:path*',
+                destination: `${backendUrl}/admin/:path*`,
+            },
+            {
+                source: '/admin-api',
+                destination: `${backendUrl}/admin-api`,
+            },
+            {
+                source: '/admin-api/:path*',
+                destination: `${backendUrl}/admin-api/:path*`,
+            },
+            {
+                source: '/shop-api',
+                destination: `${backendUrl}/shop-api`,
+            },
+            {
+                source: '/shop-api/:path*',
+                destination: `${backendUrl}/shop-api/:path*`,
+            },
+        ];
+    },
 };
+
 
 export default withNextIntl(nextConfig);
