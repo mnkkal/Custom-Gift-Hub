@@ -1,4 +1,4 @@
-const { createServer } = require('http');
+const { createServer, request: httpRequest } = require('http');
 const { parse } = require('url');
 const next = require('next');
 const { spawn } = require('child_process');
@@ -55,11 +55,58 @@ const port = parseInt(process.env.PORT || '3000', 10);
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
+const vendureUrl = new URL(process.env.INTERNAL_VENDURE_URL || 'http://127.0.0.1:3002');
+
+function isVendurePath(pathname) {
+  return (
+    pathname === '/admin' ||
+    pathname.startsWith('/admin/') ||
+    pathname === '/admin-api' ||
+    pathname.startsWith('/admin-api/') ||
+    pathname === '/shop-api' ||
+    pathname.startsWith('/shop-api/')
+  );
+}
+
+function proxyToVendure(req, res, parsedUrl) {
+  // Request Vendure's canonical Admin UI path directly so it does not emit a
+  // redirect which can conflict with Next.js trailing-slash normalization.
+  const pathname = parsedUrl.pathname === '/admin' ? '/admin/' : parsedUrl.pathname;
+  const search = parsedUrl.search || '';
+  const proxyReq = httpRequest({
+    protocol: vendureUrl.protocol,
+    hostname: vendureUrl.hostname,
+    port: vendureUrl.port,
+    method: req.method,
+    path: pathname + search,
+    headers: {
+      ...req.headers,
+      host: vendureUrl.host,
+    },
+  }, (proxyRes) => {
+    res.writeHead(proxyRes.statusCode || 502, proxyRes.headers);
+    proxyRes.pipe(res);
+  });
+
+  proxyReq.on('error', (err) => {
+    console.error('Vendure proxy error for', req.url, err);
+    if (!res.headersSent) {
+      res.writeHead(502, { 'content-type': 'text/plain; charset=utf-8' });
+    }
+    res.end('Vendure backend unavailable');
+  });
+
+  req.pipe(proxyReq);
+}
 
 app.prepare().then(() => {
   createServer(async (req, res) => {
     try {
       const parsedUrl = parse(req.url, true);
+      if (isVendurePath(parsedUrl.pathname || '/')) {
+        proxyToVendure(req, res, parsedUrl);
+        return;
+      }
       await handle(req, res, parsedUrl);
     } catch (err) {
       console.error('Error occurred handling', req.url, err);
