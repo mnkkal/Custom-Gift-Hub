@@ -24,9 +24,11 @@ exports.config = {
                     'https://customgifthub.in',
                     'https://www.customgifthub.in',
                     'https://api.customgifthub.in',
+                    'https://custom-gift-hub-production.up.railway.app',
                 ];
                 if (!origin ||
                     allowedOrigins.includes(origin) ||
+                    origin.endsWith('.up.railway.app') ||
                     origin.endsWith('.vercel.app')) {
                     callback(null, true);
                 }

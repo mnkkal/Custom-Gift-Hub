@@ -7,6 +7,10 @@ const nextConfig = {
 
     output: 'standalone',
     cacheComponents: true,
+    // Vendure's Admin UI canonical URL ends with a slash. Without this,
+    // Next.js redirects /admin/ to /admin while Vendure redirects /admin back
+    // to /admin/, creating an infinite redirect loop behind the proxy.
+    skipTrailingSlashRedirect: true,
 
     images: {
         // Allow SVG images
